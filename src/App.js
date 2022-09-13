@@ -29,6 +29,8 @@ function App() {
           <Route path='/administration/Product'element={<Product/>}/>
           <Route path='/administration/Products'element={<Products/>}/>
           <Route path='/administration/Orders'element={<Orders/>}/>
+          <Route path='/administration/Category/:id' element={<Category/>}/> 
+
         
       </Routes>
       

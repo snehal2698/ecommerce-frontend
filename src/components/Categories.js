@@ -1,62 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useNavigate } from 'react';
 
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import axios from 'axios';
 
 
+
 const Categories = () => {
-  const navStyle = ({isActive}) =>{
-    return{
-      color : isActive ? '#6c7ae0' : '',
-      position : isActive ? 'relative' : '',
+  let [datas, setData] = useState([]);
+
+  function load() {
+    axios.post("http://localhost:8081/productcategory/list").then((res) => {
+      setData(res.data.data);
+    })
+  }
+
+
+  useEffect(() => {
+    load();
+  }, [])
+  const navStyle = ({ isActive }) => {
+    return {
+      color: isActive ? '#88c8bc' : '',
+      position: isActive ? 'relative' : '',
     }
   }
 
-  const headers= {
-    'Content-Type': 'application/json;charset=UTF-8',
-    "Access-Control-Allow-Origin": "*",
-}
+  function deletecategory(e, id) {
+    e.preventDefault();
+    axios.post("http://localhost:8081/productcategory/delete", { data: { id: id } }).then((res) => {
+      alert("Are you sure want to delete")
+      load();
 
-  function deleteCategory(event){
-    event.preventDefault();
-    if(window.confirm("Sure to delete?")){
-      axios.delete('http://localhost:8081/productcategory/delete' + event.target.value, headers)
-          .then((response) => {
-              axios.post('http://localhost:8081/productcategory/delete')
-                .then((response) => {
-                    setAPIData(response.data.data.data);
-                })
-          })
-      }
+    })
   }
   
 
-  const [APIData, setAPIData] = useState([]);
-  useEffect(() => {
-      axios.post('http://localhost:8081/productcategory/delete')
-          .then((response) => {
-              setAPIData(response.data.data.data);
-          })
-  }, [])
-
-
-  const [ data, setCategories] = useState([]);
-   function load(){
-    axios.post("http://localhost:8081/productcategory/list").then((res)=>{setCategories(res.data.data); console.log(res.data)})
-   }
-
-  useEffect((e)=>{
-    load();
-  },[])
-
-  // function deleteCategory(e,id){
-  //   e.preventDefault();
-  //   alert("delete")
-  //   axios.post("http://localhost:8081/productcategory/delete",{data:{id:id}}).then(res=>load())
-  // }
   return (
-    <>
-      <div className="container-fluid">
+    <div className="container-fluid">
         <div className="row">
           <div className="col-lg-2 mt-3 ">
             <ul>
@@ -85,45 +65,33 @@ const Categories = () => {
               <tr>
                 <th>Action</th>
                 <th>No</th>
-                <th>Image</th>
                 <th>Name</th>
+                <th>Image</th>
               </tr>
-              
-
                 {
-                  data.map((item, d) => {
+                  datas.map((data,item) => {
                     return (
-                            <>
-                            <tr key={ item._id }>
-                            <td>
-                                <a className='btn btn-primary' href='#'>Edit</a>
-                                <br />
-                                {/* <button className="btn btn-danger" onClick={(e) =>deleteCategory(e, data._id)} >Delete</button> */}
-                                <button  value={data._id} onClick={deleteCategory} class="btn btn-danger">Delete</button>
-
-                            </td>
-                              <td>{ item.srno }</td>
-                              <td><img src={ "http://localhost:8081/" + item.imagepath } /></td>
-                              <td>{ item.name }</td>  
-                            </tr>
-                            </>
-                          )
-                        })       
-                      }
-                     
-                      </table>
-
-                      
-                  
-                       
-
-              <Outlet />
-
+                      <>
+                        <tr>
+                          <td>
+                            <Link className="btn btn-primary " to ={"/administration/Category/" + data._id}>Edit</Link>
+                            <button className="btn btn-danger" onClick={(e) => deletecategory(e, data._id)} >Delete</button>
+                          </td>
+                          <td>{data.srno}</td>
+                          <td>{data.name}</td>
+                          <td><img src={"http://localhost:8081/" + data.imgpath} style={{ height: '70px' }} /></td>
+                         
+                        </tr>
+                      </>
+                    )
+                  })
+                }
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    </>
+        
   )
+}
 
-};
 export default Categories;

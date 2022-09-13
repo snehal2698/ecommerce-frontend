@@ -45,16 +45,13 @@ const Login = () => {
         <div id="formContent">
         
             <input type="text" onChange={(e)=>{handle(e)}}
-                value={data.username} id="username" className="fadeIn second" for="password" placeholder="username" />
+                value={data.username} id="username" className="fadeIn second mt-5" for="password" placeholder="username" />
             
             <input type="text" onChange={(e)=>{handle(e)}}
                 value={data.password} id="password" className="fadeIn third" for="password" placeholder="password"/>
             
             <input type="button" onClick={(e)=>{submit(e)}} className="fadeIn fourth" value="Log In"/>            
-            <div id="formFooter">
-                <a className="underlineHover" href="#">Forgot Password?</a>
-            </div>
-
+           
         </div>
     </div>
         </>
